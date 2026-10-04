@@ -1,0 +1,6 @@
+{
+  "name": "Kronos Atelier — Enterprise E-Commerce Platform",
+  "description": "Production-grade luxury architectural lighting, precision studio audio, and tactile hardware e-commerce platform with full RBAC admin console, inventory automation, order orchestration, and DevOps telemetry.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

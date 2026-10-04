@@ -1,0 +1,40 @@
+name: Security & Vulnerability Scanning
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 3 * * 1'
+
+jobs:
+  security-audit:
+    name: Secret Scan, Bandit SAST & Container Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Bandit & Pip-Audit
+        run: pip install bandit==1.7.10 pip-audit
+
+      - name: Execute Workspace Secret & Certificate Guard
+        run: bash ./scripts/security-check.sh
+
+      - name: Execute Bandit SAST Scan
+        run: bandit -r backend/src/
+
+      - name: Execute Trivy Filesystem Vulnerability Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'

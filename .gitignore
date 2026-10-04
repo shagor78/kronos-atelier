@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Production builds
+dist/
+build/
+server.js
+
+# Environment & Secrets (NEVER COMMIT)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.staging
+.env.production
+secrets/
+credentials/
+
+# SSL / TLS Certificates & Private Keys (NEVER COMMIT)
+*.pem
+*.key
+*.crt
+*.csr
+*.p12
+*.pfx
+private.key
+server.key
+certificate.pem
+fullchain.pem
+privkey.pem
+
+# Runtime SQLite & Backups
+database/*.sqlite
+database/*.sqlite-shm
+database/*.sqlite-wal
+database/*.db
+database/backups/*.sql
+database/backups/*.sqlite
+database/backups/*.gz
+
+# Logs & PIDs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.pid
+*.seed
+*.pid.lock
+
+# Editor & OS files
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*~

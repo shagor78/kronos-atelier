@@ -1,0 +1,34 @@
+name: Production CD — AWS EC2 Deployment & Rollback
+
+on:
+  workflow_run:
+    workflows: ["Production CI Pipeline"]
+    types:
+      - completed
+    branches: [main]
+
+jobs:
+  deploy-production:
+    name: Deploy to AWS EC2 Ubuntu with Health Check & Rollback
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout Verified Commit
+        uses: actions/checkout@v4
+
+      - name: Execute Pre-Deployment Database Backup & Verification
+        run: bash ./scripts/backup.sh
+
+      - name: Build Production Assets
+        run: |
+          npm install
+          npm run build
+
+      - name: Deploy & Verify Production Health Check
+        id: deploy_step
+        run: bash ./scripts/deploy.sh
+
+      - name: Automatic Rollback on Failure
+        if: failure()
+        run: bash ./scripts/rollback.sh
