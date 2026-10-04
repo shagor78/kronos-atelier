@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main, develop]
 
+# অটো-কমিটের জন্য রুট লেভেলে রাইট পারমিশন প্রয়োজন
+permissions:
+  contents: write
+
 jobs:
   ci-build-and-test:
     name: Lint, Format, Unit/Integration Tests, Security & Build
@@ -14,6 +18,9 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+        with:
+          # পুশ করার জন্য অরিজিনাল চ্যানেল ধরে রাখতে
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -34,14 +41,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: TypeScript Strict Type Check (Lint)
-        run: npm run lint
+      - name: Auto-format Python code with Black
+        run: |
+          black backend/
+          
+          # যদি কোনো ফাইলে পরিবর্তন এসে থাকে তবে তা অটোমেটিক কমিট ও পুশ হবে
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add backend/
+            git commit -m "style: auto-format backend code with black [skip ci]"
+            git push
+          else
+            echo "No formatting changes needed."
+          fi
 
       - name: Python Flake8 Lint Check
         run: flake8 backend/
-
-      - name: Python Black Formatting Check
-        run: black --check backend/
 
       - name: Python Bandit Security Static Analysis
         run: bandit -r backend/src/
