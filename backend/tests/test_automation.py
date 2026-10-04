@@ -64,9 +64,7 @@ class TestEcommerceAutomation(unittest.TestCase):
             conn.commit()
             conn.close()
 
-            self.assertTrue(
-                verify_sqlite_schema(tmp.name, required_tables=["users", "products"])
-            )
+            self.assertTrue(verify_sqlite_schema(tmp.name, required_tables=["users", "products"]))
             self.assertFalse(
                 verify_sqlite_schema(
                     tmp.name, required_tables=["users", "products", "missing_table"]
